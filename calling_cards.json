@@ -1,0 +1,14 @@
+{
+	"id": "calling_cards",
+	"name": "Calling Cards",
+	"display_name": "CC",
+	"author": ["Raevyn"],
+	"description": "A slew of raven-themed cards for your enjoyment.",
+	"prefix": "ccs",
+	"main_file": "main.lua",
+	"priority": 0,
+	"badge_colour": "",
+	"badge_text_colour": "D9BBF9",
+	"version": "0.1.0",
+	"dependencies": []
+}
