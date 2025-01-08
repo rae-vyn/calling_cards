@@ -8,10 +8,10 @@ SMODS.Atlas {
 
 SMODS.Joker {
     -- How the code refers to the joker.
-    key = 'joker2',
+    key = 'bighandsonly',
     -- loc_text is the actual name and description that show in-game for the card.
     loc_txt = {
-        name = 'Joker 2',
+        name = 'Big Hands Only',
         text = {
         --[[
         The #1# is a variable that's stored in config, and is put into loc_vars.
@@ -22,7 +22,9 @@ SMODS.Joker {
         Multiple variables can be used in one space, as long as you separate them with a comma. {C:attention, X:chips, s:1.3} would be the yellow attention color, with a blue chips-colored background,, and 1.3 times the scale of other text.
         You can find the vanilla joker descriptions and names as well as several other things in the localization files.
         ]]
-        "{C:mult}+#1# {} Mult"
+        "{C:white, X:mult}x5{} Mult",
+        "if hand has",
+        "{C:attention}4 or more{} cards"
         }
     },
     --[[
@@ -39,7 +41,7 @@ SMODS.Joker {
         return { vars = { card.ability.extra.mult } }
     end,
     -- Sets rarity. 1 common, 2 uncommon, 3 rare, 4 legendary.
-    rarity = 1,
+    rarity = 3,
     -- Which atlas key to pull from.
     atlas = 'TestTarot',
     -- This card's position on the atlas, starting at {x=0,y=0} for the very top left.
@@ -50,14 +52,13 @@ SMODS.Joker {
     calculate = function(self, card, context)
         -- Tests if context.joker_main == true.
         -- joker_main is a SMODS specific thing, and is where the effects of jokers that just give +stuff in the joker area area triggered, like Joker giving +Mult, Cavendish giving XMult, and Bull giving +Chips.
-        if context.joker_main then
+        if context.joker_main and #context.full_hand >= 4 then
         -- Tells the joker what to do. In this case, it pulls the value of mult from the config, and tells the joker to use that variable as the "mult_mod".
         return {
             mult_mod = card.ability.extra.mult,
             -- This is a localize function. Localize looks through the localization files, and translates it. It ensures your mod is able to be translated. I've left it out in most cases for clarity reasons, but this one is required, because it has a variable.
             -- This specifically looks in the localization table for the 'variable' category, specifically under 'v_dictionary' in 'localization/en-us.lua', and searches that table for 'a_mult', which is short for add mult.
             -- In the localization file, a_mult = "+#1#". Like with loc_vars, the vars in this message variable replace the #1#.
-            message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
             -- Without this, the mult will stil be added, but it'll just show as a blank red square that doesn't have any text.
         }
         end
