@@ -1,8 +1,8 @@
 SMODS.Atlas {
-    key = "TestTarot"
-    px = 69
-    py = 93
-    path = "TestTarot.png"
+    key = "TestTarot",
+    px = 69,
+    py = 93,
+    path = "TestTarot.png",
 }
 
 
