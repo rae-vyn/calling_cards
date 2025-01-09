@@ -1,7 +1,7 @@
 {
 	"id": "calling_cards",
 	"name": "Calling Cards",
-	"display_name": "CC",
+	"display_name": "Calling Cards",
 	"author": ["Raevyn"],
 	"description": "A slew of raven-themed cards for your enjoyment.",
 	"prefix": "ccs",
