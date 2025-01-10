@@ -1,33 +1,35 @@
 SMODS.Atlas {key = "Placeholder", px = 69, py = 93, path = "Placeholder.png"}
-
+SMODS.Atlas {key = "TheClaw", px = 69, py = 93, path = "TheClaw.png"}
 -- The Claw
 SMODS.Joker {
     key = 'theclaw',
     loc_txt = {
         name = 'The Claw',
         text = {
-            "{C:white,X:mult}+5{} Mult", "if hand has",
+            "{C:white,X:mult}+5{} Mult", 
+            "per card", 
+            "if hand has",
             "{C:attention}4 or more{} cards"
         }
     },
 
-    config = {extra = {mult = 4}},
+    config = {extra = { mult = 5 } },
 
     loc_vars = function(self, info_queue, card)
-        return {vars = {card.ability.extra.mult}}
+        return {vars = {card.ability.extra.mult} }
     end,
     rarity = 2,
-    atlas = 'Placeholder', -- TODO: Make art
+    atlas = 'TheClaw',
     pos = {x = 0, y = 0},
     cost = 2,
     calculate = function(self, card, context)
         if context.joker_main and #context.full_hand >= 4 then
             return {
-                mult_mod = card.ability.extra.mult,
+                mult_mod = card.ability.extra.mult * #context.full_hand,
                 message = localize {
                     type = 'variable',
                     key = 'a_mult',
-                    vars = {card.ability.extra.mult}
+                    vars = {card.ability.extra.mult * #context.full_hand}
                 }
             }
         end
