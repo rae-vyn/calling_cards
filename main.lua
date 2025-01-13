@@ -1,5 +1,6 @@
 SMODS.Atlas {key = "Placeholder", px = 69, py = 93, path = "Placeholder.png"}
-SMODS.Atlas {key = "TheClaw", px = 71, py = 95, path = "Claw.png"}
+SMODS.Atlas {key = "TheClaw", px = 71, py = 95, path = "TheClaw.png"}
+SMODS.Atlas {key = "TheFeather", px = 71, py = 95, path = "TheFeather.png"}
 -- The Claw
 SMODS.Joker {
     key = 'theclaw',
@@ -22,11 +23,14 @@ SMODS.Joker {
     atlas = 'TheClaw',
     pos = {x = 0, y = 0},
     cost = 2,
+    blueprint_compat = true,
     calculate = function(self, card, context)
-        if context.joker_main and #context.full_hand >= 4 then
-            return {
-                mult_mod = card.ability.extra.mult * #context.full_hand
-            }
+        if context.individual and not context.end_of_round then
+            if #context.full_hand >= 4 then
+                return {
+                    mult = card.ability.extra.mult
+                }
+            end
         end
     end
 }
@@ -43,11 +47,12 @@ SMODS.Joker {
     },
     config = {},
     rarity = 3,
-    atlas = "Placeholder", -- TODO: Make art
+    atlas = "TheFeather", -- TODO: Make art
     pos = {x = 0, y = 0},
     cost = 4,
+    blueprint_compat = true,
     calculate = function(self, card, context)
-        if context.after then
+        if context.before then
             local hand_size = #context.scoring_hand
             local _card = copy_card(context.scoring_hand[hand_size],
                                     nil, nil, G.playing_card, true)
@@ -57,6 +62,41 @@ SMODS.Joker {
             G.deck.config.card_limit = G.deck.config.card_limit + 1
             G.deck:emplace(_card)
             table.insert(G.playing_cards, _card)
+
+            return {
+                message = "Copied!"
+            }
+        end
+    end
+}
+-- The Eye
+SMODS.Joker {
+    key = "theeye",
+    loc_txt = {
+        name = "The Eye",
+        text = {
+            "Every card bought", 
+            "becomes {C:dark_edition}Negative{};",
+            "{C:red}#1# dollars{} in addition to",
+            "the inflated cost."
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.money } }
+    end,
+    config = { extra = { money = -9}},
+    rarity = 3,
+    altas = "Placeholder", -- TODO: Make art
+    pos = {x = 0, y = 0},
+    cost = 4,
+    blueprint_compat = false,
+    calculate = function(self, card, context)
+        if context.buying_card and not context.blueprint then
+            context.card:set_edition("e_negative")
+            ease_dollars(card.ability.extra.money, true)
+            ease_dollars(context.card.cost)
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = '$'..card.ability.extra.money, colour = G.C.GOLD})
+            return
         end
     end
 }
