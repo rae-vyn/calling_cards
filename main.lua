@@ -1,5 +1,6 @@
 SMODS.Atlas {key = "Placeholder", px = 69, py = 93, path = "Placeholder.png"}
 SMODS.Atlas {key = "TheClaw", px = 69, py = 93, path = "TheClaw.png"}
+SMODS.Atlas {key = "TheFeather", px = 71, py = 95, path = "TheFeather.png"}
 -- The Claw
 SMODS.Joker {
     key = 'theclaw',
@@ -48,7 +49,7 @@ SMODS.Joker {
     },
     config = {},
     rarity = 3,
-    atlas = "Placeholder", -- TODO: Make art
+    atlas = "TheFeather", -- TODO: Make art
     pos = {x = 0, y = 0},
     cost = 4,
     calculate = function(self, card, context)
