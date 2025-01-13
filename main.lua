@@ -1,5 +1,5 @@
 SMODS.Atlas {key = "Placeholder", px = 69, py = 93, path = "Placeholder.png"}
-SMODS.Atlas {key = "TheClaw", px = 69, py = 93, path = "TheClaw.png"}
+SMODS.Atlas {key = "TheClaw", px = 71, py = 95, path = "Claw.png"}
 -- The Claw
 SMODS.Joker {
     key = 'theclaw',
@@ -25,12 +25,7 @@ SMODS.Joker {
     calculate = function(self, card, context)
         if context.joker_main and #context.full_hand >= 4 then
             return {
-                mult_mod = card.ability.extra.mult * #context.full_hand,
-                message = localize {
-                    type = 'variable',
-                    key = 'a_mult',
-                    vars = {card.ability.extra.mult * #context.full_hand}
-                }
+                mult_mod = card.ability.extra.mult * #context.full_hand
             }
         end
     end
@@ -52,7 +47,7 @@ SMODS.Joker {
     pos = {x = 0, y = 0},
     cost = 4,
     calculate = function(self, card, context)
-        if context.joker_main then
+        if context.after then
             local hand_size = #context.scoring_hand
             local _card = copy_card(context.scoring_hand[hand_size],
                                     nil, nil, G.playing_card, true)
