@@ -127,11 +127,12 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = false,
     calculate = function(self, card, context)
-        if context.joker_main and not context.blueprint then
+        if context.after and not context.blueprint then
             local total_mult = 0
             for _, _card in ipairs(context.full_hand) do
                 local card_rank = _card:get_id()
-                if _card.ability.effect == 'glass' then
+                print(_card.ability.effect)
+                if _card.ability.effect == 'Glass Card' then
                     print(card_rank)
                     _card:shatter()
                     total_mult = total_mult + 2 * card_rank
