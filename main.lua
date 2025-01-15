@@ -12,7 +12,7 @@ SMODS.Joker {
     loc_txt = {
         name = 'The Claw',
         text = {
-            "{C:white,X:mult}+5{} Mult", 
+            "{C:mult}+5{} Mult", 
             "per card", 
             "if hand has",
             "{C:attention}4 or more{} cards"
@@ -51,7 +51,7 @@ SMODS.Joker {
         }
     },
     config = {},
-    rarity = 3,
+    rarity = 2,
     atlas = "TheFeather",
     pos = {x = 0, y = 0},
     cost = 4,
@@ -80,9 +80,9 @@ SMODS.Joker {
     loc_txt = {
         name = "The Eye",
         text = {
-            "Every card bought", 
+            "Each Joker bought", 
             "becomes {C:dark_edition}Negative{};",
-            "{C:red}$#1#{} in addition to",
+            "{C:money}$#1#{} in addition to",
             "the inflated cost."
         }
     },
@@ -107,39 +107,37 @@ SMODS.Joker {
 
 -- The Bones
 SMODS.Joker {
-    key = "thebones",
+    key = "thebone",
     loc_txt = {
-        name = "The Bones",
+        name = "The Bone",
         text = {
-            "Every glass card", 
-            "in played hand {C:red}breaks{}," ,
-            "adds {C:attention}double rank{}", 
-            "to mult"
+            "All discarded",
+            "Glass cards {C:red}break{},",
+            "gains {C:attention}double{}" ,
+            "{C:attention}their ranks{} as Mult", 
+            "(Currently {C:mult}+#1#{} Mult)"
         }
     },
     loc_vars = function(self, info_queue, card)
-        return { vars = {} }
+        return { vars = {card.ability.extra.mult} }
     end,
-    config = { },
-    rarity = 3,
+    config = { extra = {mult = 0}},
+    rarity = 2,
     atlas = "TheBones", 
     pos = {x = 0, y = 0},
     cost = 4,
-    blueprint_compat = false,
+    blueprint_compat = true,
     calculate = function(self, card, context)
-        if context.after and not context.blueprint then
-            local total_mult = 0
-            for _, _card in ipairs(context.full_hand) do
-                local card_rank = _card:get_id()
-                print(_card.ability.effect)
-                if _card.ability.effect == 'Glass Card' then
-                    print(card_rank)
-                    _card:shatter()
-                    total_mult = total_mult + 2 * card_rank
-                end
+        if context.discard and not context.blueprint then
+            if context.other_card.ability.effect == 'Glass Card' then
+                card.ability.extra.mult = card.ability.extra.mult + 2 * context.other_card:get_id()
+                context.other_card:shatter()
             end
+        end
+        if context.joker_main and card.ability.extra.mult > 0 then
             return {
-                mult = total_mult
+                mult_mod = card.ability.extra.mult,
+                message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
             }
         end
     end
