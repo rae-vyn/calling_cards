@@ -97,6 +97,9 @@ SMODS.Joker {
     blueprint_compat = false,
     calculate = function(self, card, context)
         if context.buying_card and not context.blueprint then
+            if context.card.ability.set ~= 'Joker' then
+                return
+            end
             context.card:set_edition("e_negative")
             ease_dollars(card.ability.extra.money)
             card_eval_status_text(card, 'extra', nil, nil, nil, {message = '$'..card.ability.extra.money, colour = G.C.GOLD})
