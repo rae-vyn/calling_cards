@@ -31,7 +31,7 @@ SMODS.Joker {
     blueprint_compat = true,
     calculate = function(self, card, context)
         if context.individual and not context.end_of_round then
-            if #context.full_hand >= 4 then
+            if #context.full_hand >= 4 then -- The # is the length operator in Lua.
                 return {
                     mult = card.ability.extra.mult
                 }
@@ -58,14 +58,22 @@ SMODS.Joker {
     blueprint_compat = true,
     calculate = function(self, card, context)
         if context.before then
-            local hand_size = #context.scoring_hand
-            local _card = copy_card(context.scoring_hand[hand_size],
-                                    nil, nil, G.playing_card, true)
+            -- The number of cards that score.
+            local hand_size = #context.scoring_hand 
+            --[[ 
+            Creates a copy of a playing card (That's why the G.playing_card is there)
+            Since Lua uses 1-based indexing, we can just grab the card using the length of the array
+            ]]
+            local _card = copy_card(context.scoring_hand[hand_size], nil, nil, G.playing_card, true)
+            -- Removes the seal and enhancement from the card
             _card:set_seal()
             _card:set_ability(G.P_CENTERS.c_base)
             _card:add_to_deck()
+            -- Adds more room for the card
             G.deck.config.card_limit = G.deck.config.card_limit + 1
+            -- Emplace the card into the deck so it doesn't hover onscreen.
             G.deck:emplace(_card)
+            -- Add the card to the actual deck table
             table.insert(G.playing_cards, _card)
 
             return {
@@ -96,12 +104,15 @@ SMODS.Joker {
     cost = 4,
     blueprint_compat = false,
     calculate = function(self, card, context)
+        -- We add `not context.blueprint` so blueprint doesn't retrigger it.
         if context.buying_card and not context.blueprint then
+            -- Checks if the card is actually a Joker.
             if context.card.ability.set ~= 'Joker' then
                 return
             end
             context.card:set_edition("e_negative")
             ease_dollars(card.ability.extra.money)
+            -- This just adds a $-9 popup under the card.
             card_eval_status_text(card, 'extra', nil, nil, nil, {message = '$'..card.ability.extra.money, colour = G.C.GOLD})
             return
         end
@@ -132,12 +143,17 @@ SMODS.Joker {
     blueprint_compat = true,
     calculate = function(self, card, context)
         if context.discard and not context.blueprint then
-            if context.other_card.ability.effect == 'Glass Card' then
+            if context.other_card.ability.effect == 'Glass Card' then -- Check if it's a glass card
+                --[[
+                Even though face cards all have a chip value of 10,
+                They have an actual numerical rank (Jack is 11, Queen is 12, etc.)
+                ]]
                 card.ability.extra.mult = card.ability.extra.mult + 2 * context.other_card:get_id()
+                -- Since it's a glass card, we can call shatter() to destroy it.
                 context.other_card:shatter()
             end
         end
-        if context.joker_main and card.ability.extra.mult > 0 then
+        if context.joker_main and card.ability.extra.mult > 0 then -- Make sure there's actually some mult to add.
             return {
                 mult_mod = card.ability.extra.mult,
                 message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
