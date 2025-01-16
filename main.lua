@@ -1,10 +1,11 @@
--- Atlasses
-SMODS.Atlas {key = "Placeholder", px = 71, py = 95, path = "Placeholder.png"}
-SMODS.Atlas {key = "TheClaw", px = 71, py = 95, path = "Claw2.png"}
-SMODS.Atlas {key = "TheFeather", px = 71, py = 95, path = "TheFeather2.png"}
-SMODS.Atlas {key = "TheEye", px = 71, py = 95, path = "TheEye.png"}
-SMODS.Atlas {key = "TheBones", px = 71, py = 95, path = "TheBones.png"}
-
+--[[
+0 -> Claw
+1 -> Beak
+2 -> Bone
+3 -> Eye
+4 -> Feather
+]]
+SMODS.Atlas {key = "CC_ATLAS", px = 71, py = 95, path = "CC_ATLAS.png"}
 
 -- The Claw
 SMODS.Joker {
@@ -25,7 +26,7 @@ SMODS.Joker {
         return {vars = {card.ability.extra.mult} }
     end,
     rarity = 2,
-    atlas = 'TheClaw',
+    atlas = "CC_ATLAS",
     pos = {x = 0, y = 0},
     cost = 2,
     blueprint_compat = true,
@@ -36,6 +37,123 @@ SMODS.Joker {
                     mult = card.ability.extra.mult
                 }
             end
+        end
+    end
+}
+
+-- The Beak 
+SMODS.Joker {
+    key = "thebeak",
+    loc_txt = {
+        name = "The Beak",
+        text = {
+            "Gains {C:mult}+#1#{} Mult",
+            "Every time a {C:gold}Gold{}",
+            "or {C:inactive}Steel{} card",
+            "is scored in hand",
+            "(Currently +#2# Mult)"
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.mult, card.ability.extra.curr_mult}}
+    end,
+    config = {extra = {mult = 5, curr_mult = 0}},
+    rarity = 2,
+    atlas = "CC_ATLAS",
+    pos = { x = 1, y = 0},
+    cost = 3,
+    blueprint_compat = true,
+    calculate = function(self, card, context)
+        if context.individual and not context.end_of_round then
+            if context.other_card.ability.effect == 'Steel Card' or context.other_card.ability.effect == 'Gold Card' then -- Check if it's a steel/gold
+                card.ability.extra.curr_mult = card.ability.extra.curr_mult + card.ability.extra.mult
+            end
+        end
+        if context.joker_main and card.ability.extra.curr_mult > 0 then -- Make sure there's actually some mult to add.
+            return {
+                mult_mod = card.ability.extra.mult,
+                message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+            }
+        end
+    end
+}
+
+-- The Bones
+SMODS.Joker {
+    key = "thebone",
+    loc_txt = {
+        name = "The Bone",
+        text = {
+            "All discarded",
+            "Glass cards {C:red}break{},",
+            "gains {C:attention}double{}" ,
+            "{C:attention}their ranks{} as Mult", 
+            "(Currently {C:mult}+#1#{} Mult)"
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = {card.ability.extra.mult} }
+    end,
+    config = { extra = {mult = 0}},
+    rarity = 2,
+    atlas = "CC_ATLAS", 
+    pos = {x = 2, y = 0},
+    cost = 4,
+    blueprint_compat = true,
+    calculate = function(self, card, context)
+        if context.discard and not context.blueprint then
+            if context.other_card.ability.effect == 'Glass Card' then -- Check if it's a glass card
+                --[[
+                Even though face cards all have a chip value of 10,
+                They have an actual numerical rank (Jack is 11, Queen is 12, etc.)
+                ]]
+                card.ability.extra.mult = card.ability.extra.mult + 2 * context.other_card:get_id()
+                -- Since it's a glass card, we can call shatter() to destroy it.
+                context.other_card:shatter()
+            end
+        end
+        if context.joker_main and card.ability.extra.mult > 0 then -- Make sure there's actually some mult to add.
+            return {
+                mult_mod = card.ability.extra.mult,
+                message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
+            }
+        end
+    end
+}
+
+-- The Eye
+SMODS.Joker {
+    key = "theeye",
+    loc_txt = {
+        name = "The Eye",
+        text = {
+            "Each Joker bought", 
+            "becomes {C:dark_edition}Negative{};",
+            "{C:money}$#1#{} in addition to",
+            "the inflated cost."
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.money } }
+    end,
+    config = { extra = { money = -9} },
+    rarity = 3,
+    atlas = "CC_ATLAS",
+    pos = {x = 3, y = 0},
+    cost = 4,
+    blueprint_compat = false,
+    calculate = function(self, card, context)
+        -- We add `not context.blueprint` so blueprint doesn't retrigger it.
+        if context.buying_card and not context.blueprint then
+            -- Checks if the card is actually a Joker.
+            if context.card.ability.set ~= 'Joker' then
+                return
+            end
+            context.card:set_edition("e_negative")
+            ease_dollars(card.ability.extra.money)
+            -- This just adds a $-9 popup under the card.
+            card_eval_status_text(card, 'extra', nil, nil, nil, {message = '$'..card.ability.extra.money, colour = G.C.GOLD})
+            return
         end
     end
 }
@@ -52,8 +170,8 @@ SMODS.Joker {
     },
     config = {},
     rarity = 2,
-    atlas = "TheFeather",
-    pos = {x = 0, y = 0},
+    atlas = "CC_ATLAS",
+    pos = {x = 4, y = 0},
     cost = 4,
     blueprint_compat = true,
     calculate = function(self, card, context)
@@ -78,85 +196,6 @@ SMODS.Joker {
 
             return {
                 message = "Copied!"
-            }
-        end
-    end
-}
--- The Eye
-SMODS.Joker {
-    key = "theeye",
-    loc_txt = {
-        name = "The Eye",
-        text = {
-            "Each Joker bought", 
-            "becomes {C:dark_edition}Negative{};",
-            "{C:money}$#1#{} in addition to",
-            "the inflated cost."
-        }
-    },
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.money } }
-    end,
-    config = { extra = { money = -9} },
-    rarity = 3,
-    atlas = "TheEye",
-    pos = {x = 0, y = 0},
-    cost = 4,
-    blueprint_compat = false,
-    calculate = function(self, card, context)
-        -- We add `not context.blueprint` so blueprint doesn't retrigger it.
-        if context.buying_card and not context.blueprint then
-            -- Checks if the card is actually a Joker.
-            if context.card.ability.set ~= 'Joker' then
-                return
-            end
-            context.card:set_edition("e_negative")
-            ease_dollars(card.ability.extra.money)
-            -- This just adds a $-9 popup under the card.
-            card_eval_status_text(card, 'extra', nil, nil, nil, {message = '$'..card.ability.extra.money, colour = G.C.GOLD})
-            return
-        end
-    end
-}
-
--- The Bones
-SMODS.Joker {
-    key = "thebone",
-    loc_txt = {
-        name = "The Bone",
-        text = {
-            "All discarded",
-            "Glass cards {C:red}break{},",
-            "gains {C:attention}double{}" ,
-            "{C:attention}their ranks{} as Mult", 
-            "(Currently {C:mult}+#1#{} Mult)"
-        }
-    },
-    loc_vars = function(self, info_queue, card)
-        return { vars = {card.ability.extra.mult} }
-    end,
-    config = { extra = {mult = 0}},
-    rarity = 2,
-    atlas = "TheBones", 
-    pos = {x = 0, y = 0},
-    cost = 4,
-    blueprint_compat = true,
-    calculate = function(self, card, context)
-        if context.discard and not context.blueprint then
-            if context.other_card.ability.effect == 'Glass Card' then -- Check if it's a glass card
-                --[[
-                Even though face cards all have a chip value of 10,
-                They have an actual numerical rank (Jack is 11, Queen is 12, etc.)
-                ]]
-                card.ability.extra.mult = card.ability.extra.mult + 2 * context.other_card:get_id()
-                -- Since it's a glass card, we can call shatter() to destroy it.
-                context.other_card:shatter()
-            end
-        end
-        if context.joker_main and card.ability.extra.mult > 0 then -- Make sure there's actually some mult to add.
-            return {
-                mult_mod = card.ability.extra.mult,
-                message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
             }
         end
     end
