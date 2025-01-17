@@ -3,7 +3,7 @@
 	"name": "Calling Cards",
 	"display_name": "Calling Cards",
 	"author": ["Raevyn"],
-	"description": "A slew of raven-themed cards for your enjoyment.",
+	"description": "A slew of animal-themed cards for your pleasure.",
 	"prefix": "ccs",
 	"main_file": "main.lua",
 	"priority": 0,
