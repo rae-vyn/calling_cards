@@ -4,6 +4,9 @@ The Snake
 This set's primary focus will be cards that accrue value over time.
 
 The Fang: X4 mult per joker (not including self), 1 in 4 chance to destroy a random joker at the end of round
+The Nest: After two rounds, sell for 50% chance to make an Egg, 25% chance to make two eggs, and 25% chance to make The Fang
+The Venom: 1 in 2 chance to destroy a played card, X5 mult
+Ouroboros: Keeps the ante where it is until sold.
 ]]
 
 SMODS.Atlas {key = "placeholder", px = 71, py = 95, path = "Placeholder.png"}
@@ -28,7 +31,7 @@ SMODS.Joker({
         return { vars = {card.ability.extra.xmult, card.ability.extra.curr_mult}}
     end,
     rarity = 2,
-    atlas = "thefang", -- TODO: Make art
+    atlas = "thefang",
     pos = {x = 0, y = 0},
     cost = 4,
     blueprint_compat = true,
