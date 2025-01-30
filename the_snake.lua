@@ -14,18 +14,6 @@ SMODS.Atlas {key = "thefang", px = 71, py = 95, path = "TheFang.png"}
 
 SMODS.Joker({
     key = "thefang",
-    loc_txt = {
-        name = "The Fang",
-        text = {
-            "{C:white,X:mult}X#1#{} Mult per",
-            "Joker, {C:green}1 in 4{}",
-            "chance to destroy", 
-            "random Joker at",
-            "end of round",
-            "{C:inactive,s:0.8}This card not included",
-            "(currently {C:white,X:mult}X#2#{} Mult)"
-        }
-    },
     config = { extra = { xmult = 4, curr_mult = 0 } },
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.xmult, card.ability.extra.curr_mult}}
@@ -65,4 +53,4 @@ SMODS.Joker({
             chosen:start_dissolve()
         end
     end
-})      
+})

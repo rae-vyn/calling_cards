@@ -45,7 +45,7 @@ return {
                     "Creates an {C:attention}base{}", "copy of the last",
                     "card in scored hand"
                 }
-            }
+            },
             j_ccs_thefang = {
                 name = "The Fang",
                 text = {
@@ -58,6 +58,11 @@ return {
                     "(currently {C:white,X:mult}X#2#{} Mult)"
                 }
             }
+        }
+    },
+    misc = {
+        v_text = {
+            ch_c_glass = { text = "Start with a deck of {C:attention}glass{} cards" }
         }
     }
 }
