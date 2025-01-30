@@ -80,7 +80,7 @@ SMODS.Joker {
                 card.ability.extra.mult = card.ability.extra.mult + 2 * context.other_card:get_id()
                 -- Since it's a glass card, we can call shatter() to destroy it.
                 context.other_card:shatter()
-                return { remove = true }
+                return { remove = true } -- return remove = true to actually delete the card
             end
         end
         if context.joker_main and card.ability.extra.mult > 0 then -- Make sure there's actually some mult to add.
