@@ -62,7 +62,7 @@ return {
     },
     misc = {
         v_text = {
-            ch_c_glass = { text = "Start with a deck of {C:attention}glass{} cards" }
+            ch_c_glass = { text = "Start with a deck of {T:m_glass}Glass{} cards"}
         }
     }
 }
