@@ -10,16 +10,6 @@ SMODS.Atlas {key = "CC_ATLAS", px = 71, py = 95, path = "CC_ATLAS.png"}
 -- The Claw
 SMODS.Joker {
     key = 'theclaw',
-    loc_txt = {
-        name = 'The Claw',
-        text = {
-            "{C:mult}+5{} Mult",
-            "per card",
-            "if hand has",
-            "{C:attention}4 or more{} cards"
-        }
-    },
-
     config = {extra = { mult = 5 } },
 
     loc_vars = function(self, info_queue, card)
@@ -44,16 +34,6 @@ SMODS.Joker {
 -- The Beak
 SMODS.Joker {
     key = "thebeak",
-    loc_txt = {
-        name = "The Beak",
-        text = {
-            "Gains {C:mult}+#1#{} Mult",
-            "Every time a {C:gold}Gold{}",
-            "or {C:inactive}Steel{} card",
-            "is scored in hand",
-            "(Currently +#2# Mult)"
-        }
-    },
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.mult, card.ability.extra.curr_mult}}
     end,
@@ -81,16 +61,6 @@ SMODS.Joker {
 -- The Bones
 SMODS.Joker {
     key = "thebone",
-    loc_txt = {
-        name = "The Bone",
-        text = {
-            "All discarded",
-            "Glass cards {C:red}break{},",
-            "gains {C:attention}double{}" ,
-            "{C:attention}their ranks{} as Mult",
-            "(Currently {C:mult}+#1#{} Mult)"
-        }
-    },
     loc_vars = function(self, info_queue, card)
         return { vars = {card.ability.extra.mult} }
     end,
@@ -110,6 +80,7 @@ SMODS.Joker {
                 card.ability.extra.mult = card.ability.extra.mult + 2 * context.other_card:get_id()
                 -- Since it's a glass card, we can call shatter() to destroy it.
                 context.other_card:shatter()
+                return { remove = true } -- return remove = true to actually delete the card
             end
         end
         if context.joker_main and card.ability.extra.mult > 0 then -- Make sure there's actually some mult to add.
@@ -124,15 +95,6 @@ SMODS.Joker {
 -- The Eye
 SMODS.Joker {
     key = "theeye",
-    loc_txt = {
-        name = "The Eye",
-        text = {
-            "Each Joker bought",
-            "becomes {C:dark_edition}Negative{};",
-            "{C:money}$#1#{} in addition to",
-            "the inflated cost."
-        }
-    },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.money } }
     end,
@@ -161,13 +123,6 @@ SMODS.Joker {
 -- The Feather
 SMODS.Joker {
     key = "thefeather",
-    loc_txt = {
-        name = "The Feather",
-        text = {
-            "Creates an {C:attention}base{}", "copy of the last",
-            "card in scored hand"
-        }
-    },
     config = {},
     rarity = 2,
     atlas = "CC_ATLAS",
