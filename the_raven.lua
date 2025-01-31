@@ -13,8 +13,8 @@ SMODS.Joker {
     loc_txt = {
         name = 'The Claw',
         text = {
-            "{C:mult}+5{} Mult", 
-            "per card", 
+            "{C:mult}+5{} Mult",
+            "per card",
             "if hand has",
             "{C:attention}4 or more{} cards"
         }
@@ -31,7 +31,7 @@ SMODS.Joker {
     cost = 2,
     blueprint_compat = true,
     calculate = function(self, card, context)
-        if context.individual and not context.end_of_round then
+        if context.individual and not context.end_of_round and context.cardarea == G.play then
             if #context.full_hand >= 4 then -- The # is the length operator in Lua.
                 return {
                     mult = card.ability.extra.mult
@@ -41,7 +41,7 @@ SMODS.Joker {
     end
 }
 
--- The Beak 
+-- The Beak
 SMODS.Joker {
     key = "thebeak",
     loc_txt = {
@@ -87,7 +87,7 @@ SMODS.Joker {
             "All discarded",
             "Glass cards {C:red}break{},",
             "gains {C:attention}double{}" ,
-            "{C:attention}their ranks{} as Mult", 
+            "{C:attention}their ranks{} as Mult",
             "(Currently {C:mult}+#1#{} Mult)"
         }
     },
@@ -96,7 +96,7 @@ SMODS.Joker {
     end,
     config = { extra = {mult = 0}},
     rarity = 2,
-    atlas = "CC_ATLAS", 
+    atlas = "CC_ATLAS",
     pos = {x = 2, y = 0},
     cost = 4,
     blueprint_compat = true,
@@ -127,7 +127,7 @@ SMODS.Joker {
     loc_txt = {
         name = "The Eye",
         text = {
-            "Each Joker bought", 
+            "Each Joker bought",
             "becomes {C:dark_edition}Negative{};",
             "{C:money}$#1#{} in addition to",
             "the inflated cost."
@@ -177,8 +177,8 @@ SMODS.Joker {
     calculate = function(self, card, context)
         if context.before then
             -- The number of cards that score.
-            local hand_size = #context.scoring_hand 
-            --[[ 
+            local hand_size = #context.scoring_hand
+            --[[
             Creates a copy of a playing card (That's why the G.playing_card is there)
             Since Lua uses 1-based indexing, we can just grab the card using the length of the array
             ]]
